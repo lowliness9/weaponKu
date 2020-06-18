@@ -14,11 +14,11 @@
 
 使用说明
 ---
--u TARGET    test a single target (e.g. www.example.com)
---file FILE  load targets from targetFile (e.g. ip.txt)
--t NUM       num of threads/concurrent, 5 by default
--s NUM       timeout setting, 5s by default
--h, --help   show this help message and exit
+-u TARGET    test a single target (e.g. www.example.com)  
+--file FILE  load targets from targetFile (e.g. ip.txt)  
+-t NUM       num of threads/concurrent, 5 by default  
+-s NUM       timeout setting, 5s by default  
+-h, --help   show this help message and exit  
 
 
 文件内容支持如下格式
