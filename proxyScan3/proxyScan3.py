@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
+# project = https://github.com/lowliness9/pytools.git
+# author = lowliness9
+# date: 2020-04-21
 from concurrent.futures import ThreadPoolExecutor
 import threading
 import requests
