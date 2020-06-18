@@ -1,5 +1,8 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
+# project = https://github.com/lowliness9/pytools.git
+# author = lowliness9
+# date: 2019-12-13
 import argparse
 import sys
 import time
