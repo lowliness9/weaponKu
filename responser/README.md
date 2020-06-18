@@ -10,17 +10,15 @@
 解决问题
 ---
 
-* 根据响应内容进行简单的资产发现，目前主要用来做二次验证，比如我们有一批被挂马的网站，可以找到特征，批量验证是否还存在
+根据自定义响应内容进行简单的资产发现，目前主要用来做二次验证，比如我们有一批被挂马的网站，可以找到特征，批量验证是否还存在
 
 使用说明
 ---
-
-* usage: python responser.py --file file.txt
-* -u TARGET    test a single target (e.g. www.example.com)
-* --file FILE  load targets from targetFile (e.g. ip.txt)
-* -t NUM       num of threads/concurrent, 5 by default
-* -s NUM       timeout setting, 5s by default
-* -h, --help   show this help message and exit
+-u TARGET    test a single target (e.g. www.example.com)
+--file FILE  load targets from targetFile (e.g. ip.txt)
+-t NUM       num of threads/concurrent, 5 by default
+-s NUM       timeout setting, 5s by default
+-h, --help   show this help message and exit
 
 
 文件内容支持如下格式
