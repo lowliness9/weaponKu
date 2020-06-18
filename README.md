@@ -1,7 +1,7 @@
 # pytools
 Some scripts written to solve problems at work .
 
-说明
+脚本说明
 ---
 
 * proxyScan3
