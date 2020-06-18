@@ -1,5 +1,7 @@
-环境 python2.7
-依赖 pip install -r requirement.txt
+# responser
+
+* 环境 python2.7
+* 依赖 pip install -r requirement.txt
 
 使用说明:
 usage: python vMather.py --file file.txt
