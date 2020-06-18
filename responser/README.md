@@ -1,9 +1,15 @@
 # responser
 
-* 环境 python2.7
-* 依赖 pip install -r requirement.txt
 
-使用说明:
+依赖
+---
+
+* python2.7
+* pip install -r requirement.txt
+
+
+使用说明
+---
 usage: python vMather.py --file file.txt
 
 2020
@@ -32,7 +38,10 @@ http://ip:port/xx/xx/x
 输出结果:
 当前时间命名.txt
 
-规则编写: 必须以\t分割,name开头 :为key和value的分隔符号 支持多个responseContent 规则以#开头会跳过此规则
+
+规则编写
+---
+必须以\t分割,name开头 :为key和value的分隔符号 支持多个responseContent 规则以#开头会跳过此规则
 name:规则名称	responseContent:xxxxx
 name:规则名称	responseContent:xxxxx	responseContent:xxxxx
 name:规则名称	responseContent:xxxxx	responseContent:xxxxx	responseContent:xxxxx
