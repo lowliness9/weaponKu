@@ -11,5 +11,5 @@ Some scripts written to solve problems at work .
 自定义响应内容进行简单的资产发现或资产验证。
 
 * fofa.so
-fofa数据抓取脚本，需要高级会员
+fofa 数据抓取脚本，需要高级会员
 
