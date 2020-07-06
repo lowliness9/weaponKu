@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-import traceback
 import requests
 import re
 import math
@@ -8,16 +7,16 @@ import sys
 import base64
 from urllib.request import quote
 
-
 # 获取页数
+
 def page(url, headers):
     # 获取查询网页的源码
     url = "https://fofa.so/result?qbase64=" + url
     r = requests.get(url, headers=headers).text
-
+    # with open('http.log','a+') as f:
+    #     f.with(t.text)
     # print(r.encoding) # 查看当前网页编码
     # print(r.text)   # 查看网页源码
-
     # 正则规则
     g = 'id="total_entries" value="(.*?)" />'
 
@@ -56,7 +55,9 @@ def sear_for(headers, page, arg):
         # g = '>(.*?) <i class="fa fa-link"></i></a>'
 
         # g = '<a target="_blank" href=".*?">(.*?)</a>'
-        g = '>(.*?) <i class="fa fa-link"></i></a>'
+
+
+        g = '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'
         # 筛选出当前页面ip和端口
         ip = re.findall(g, r)
 
@@ -73,40 +74,34 @@ def sear_for(headers, page, arg):
 
 
 def write_file(url):
-    with open(outname, 'a+',encoding='utf-8')as f:
+    name = "fofa.so.txt"
+    with open(name, 'a+',encoding='utf-8')as f:
             f.write(url+"\n")
-    with open(outname, 'r',encoding='utf-8')as f:
+    with open(name, 'r',encoding='utf-8')as f:
         lines = len(f.readlines())
-        print('[*] {}共写入{}条数据'.format(outname,lines))
+        print('[*] {}共写入{}条数据'.format(name,lines))
 
 
 if __name__ == '__main__':
-    headers = {'content-type': 'application/json',
-               'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:22.0) Gecko/20100101 Firefox/22.0',
-               "Cookie": "_fofapro_ars_session=fb923b546d9e70a07ddcb52d8b4d2c3c; referer_url=%2Fresult%3Fq%3Dapp%253D%2522Netgear%2522%2B%2526%2526%2Bcountry%253D%2522CN%2522%2B%2526%2526%2Bregion%2521%253D%2522HK%2522%2B%2526%2526%2Bregion%2521%253D%2522TW%2522%2B%2526%2526%2Bregion%2521%253D%2522MO%2522%26qbase64%3DYXBwPSJOZXRnZWFyIiAmJiBjb3VudHJ5PSJDTiIgJiYgcmVnaW9uIT0iSEsiICYmIHJlZ2lvbiE9IlRXIiAmJiByZWdpb24hPSJNTyI%253D; Hm_lvt_9490413c5eebdadf757c2be2c816aedf=1591926625,1592661772,1592721805,1592728631; Hm_lpvt_9490413c5eebdadf757c2be2c816aedf=1592728631"
-               }
 
-    outname = ''
-    for key in open('keys.txt','r+').readlines():
-        key = key.strip()
-        outname = key.split('"')[1] + '.txt'
-        print(key)
-        print(outname)
-        try:
+    headers = {
+                'Content-type': 'application/json',
+                'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:22.0) Gecko/20100101 Firefox/22.0',
+                'Cookie': "_fofapro_ars_session=5abbf801a2c9ce868ac044624791e892; path=/; expires=Fri, 03 Jul 2020 04:20:32 -0000; HttpOnly"
+    }
 
-            # arg = str(sys.argv[1])
-            arg = str(key)
+    try:
+        # arg = str(sys.argv[1])
+        arg = str(input("[*] 请输入要查询的信息："))
 
-            arg = base64.b64encode(arg.encode('utf-8')).decode()
-            arg = quote(arg)
+        arg = base64.b64encode(arg.encode('utf-8')).decode()
+        arg = quote(arg)
 
-            # 获取页数
-            pages = page(arg, headers)
+        # 获取页数
+        page = page(arg, headers)
 
-            # 查询
-            sear_for(headers, pages, arg)
+        # 查询
+        sear_for(headers, page, arg)
 
-        except:
-            pass
-            traceback.print_exc()
-        time.sleep(20)
+    except:
+        pass
