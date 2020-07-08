@@ -43,7 +43,7 @@ def dnsQuery(site):
             print line
 
 if __name__ == '__main__':
-    open('result.txt','r+').truncate()
+    open('result.txt','a+').truncate()
     if os.path.isfile(sys.argv[1]):
         for line in open(sys.argv[1],'r+').readlines():
             dnsQuery(line.strip())
