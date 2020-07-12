@@ -26,12 +26,12 @@ def dnsQuery(site):
         except:
             pass
 
-    if len(ipList)>1:
+    if len(ipList)>2:
         with open('result.txt','a+') as f:
             line = site + '\t' + 'CDN' + '\t' + ','.join(ipList)
             f.write(line + '\n')
             print line
-    elif len(ipList)==1:
+    elif len(ipList)<=2:
         with open('result.txt','a+') as f:
             line = site + '\t' + 'noCDN' + '\t' + ','.join(ipList)
             f.write(line + '\n')
