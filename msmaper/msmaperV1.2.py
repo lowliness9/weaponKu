@@ -67,18 +67,22 @@ class msMap():
 
     def parseJson(self):
         for line in open(self.jsonfile,'r'):
-            if line.strip().startswith('{'):
-                ports = []
-                line = line.strip().replace(' ','').strip(',')
-                ipObj = json.loads(line)
-                ip = ipObj['ip']
-                port = ipObj['ports'][0]['port']
-                if ip not in self.portsInfo.keys():
-                    ports.append(port)
-                    self.portsInfo[ip] = ports
-                else:
-                    if port not in self.portsInfo[ip]:
-                        self.portsInfo[ip].append(port)
+            try:
+                if line.strip().startswith('{'):
+                    ports = []
+                    line = line.strip().replace(' ','').strip(',')
+                    #print line
+                    ipObj = json.loads(line)
+                    ip = ipObj['ip']
+                    port = ipObj['ports'][0]['port']
+                    if ip not in self.portsInfo.keys():
+                        ports.append(port)
+                        self.portsInfo[ip] = ports
+                    else:
+                        if port not in self.portsInfo[ip]:
+                            self.portsInfo[ip].append(port)
+            except:
+                pass
         for k in self.portsInfo.keys():
             self.q.put('{}|{}'.format(k,','.join(str(s) for s in self.portsInfo[k])))
 
