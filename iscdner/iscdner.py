@@ -31,7 +31,7 @@ def dnsQuery(site):
             line = site + '\t' + 'CDN' + '\t' + ','.join(ipList)
             f.write(line + '\n')
             print line
-    elif len(ipList)<=2:
+    elif 0<len(ipList)<=2:
         with open('result.txt','a+') as f:
             line = site + '\t' + 'noCDN' + '\t' + ','.join(ipList)
             f.write(line + '\n')
