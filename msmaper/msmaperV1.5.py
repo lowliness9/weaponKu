@@ -96,7 +96,7 @@ class msMap():
             try:
                 ret = nm.scan(ip, ports, arguments='-T4 -Pn -n -sV')
                 for i in ret['scan'][ip]['tcp'].keys():
-                    retval = '{}\t{}\t{}\t{} {}'.format(ip,str(i),ret['scan'][ip]['tcp'][int(i)]['name'],
+                    retval = '{}:{}\t{}\t{} {}'.format(ip,str(i),ret['scan'][ip]['tcp'][int(i)]['name'],
                                                      ret['scan'][ip]['tcp'][int(i)]['product'],
                                                      ret['scan'][ip]['tcp'][int(i)]['version'])
                     self.outfile(retval)
@@ -104,7 +104,7 @@ class msMap():
                 try:
                     ret = nm.scan(ip, ports, arguments='-T4 -Pn -n -sV')
                     for i in ret['scan'][ip]['tcp'].keys():
-                        retval = '{}\t{}\t{}\t{} {}'.format(ip, str(i), ret['scan'][ip]['tcp'][int(i)]['name'],
+                        retval = '{}:{}\t{}\t{} {}'.format(ip, str(i), ret['scan'][ip]['tcp'][int(i)]['name'],
                                                          ret['scan'][ip]['tcp'][int(i)]['product'],
                                                          ret['scan'][ip]['tcp'][int(i)]['version'])
                         self.outfile(retval)
