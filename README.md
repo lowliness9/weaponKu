@@ -1,4 +1,4 @@
-# pytools
+# weaponKu
 Some scripts written to solve problems at work .
 
 脚本说明
