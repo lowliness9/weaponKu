@@ -1,0 +1,1 @@
+for i in range(1,255):print('39.96.93.{}'.format(i))
