@@ -4,6 +4,8 @@ import os
 import sys
 import re
 
+# import traceback
+
 limit = 2
 limitIP = []
 
@@ -31,7 +33,7 @@ def dnsQuery(site):
         # 美国DNS
         '1.1.1.1',
         # 瑞士
-        '5.144.17.119',
+        # '5.144.17.119',
     ]
     ipList = set()
     for server in dns_servers:
@@ -45,7 +47,8 @@ def dnsQuery(site):
                     ipList.add(str(x))
         except:
             pass
-
+            # print server
+            # traceback.print_exc()
     if len(ipList)>limit:
         with open('domain.log','a+') as f:
             line = '{}\tCDN\t{}'.format(site,','.join(ipList))
