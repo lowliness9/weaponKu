@@ -1,13 +1,19 @@
+#!/usr/bin/env python
 # -*- coding:utf-8 -*-
+import gevent
+from gevent import monkey
+monkey.patch_all()
 import dns.resolver
 import os
 import sys
 import re
+import Queue
+from threading import Lock
 
-# import traceback
+lock = Lock()
+qu = Queue.Queue()
 
 limit = 2
-limitIP = []
 
 def isIP(ip):
     p = re.compile('^((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$')
@@ -16,7 +22,7 @@ def isIP(ip):
     else:
         return False
 
-def dnsQuery(site):
+def dnsQuery():
     dns_servers = [
         # 国内
         '114.114.114.114',
@@ -35,47 +41,62 @@ def dnsQuery(site):
         # 瑞士
         # '5.144.17.119',
     ]
-    ipList = set()
-    for server in dns_servers:
-        try:
-            self_server = dns.resolver.Resolver()
-            self_server.nameservers = [server]
 
-            query = self_server.query(site)
-            for i in query.response.answer:
-                for x in i.items:
-                    ipList.add(str(x))
+    while not qu.empty():
+        try:
+            site = qu.get(block=False,timeout=0.1)
+            ipList = set()
+            limitIP = []
+            for server in dns_servers:
+                try:
+                    self_server = dns.resolver.Resolver()
+                    self_server.nameservers = [server]
+                    query = self_server.query(site)
+                    for i in query.response.answer:
+                        for x in i.items:
+                            ipList.add(str(x))
+                except:
+                    pass
+            if len(ipList)>limit:
+                lock.acquire()
+                with open('domain.log','a+') as f:
+                    line = '{}\tCDN\t{}'.format(site,','.join(ipList))
+                    f.write(line + '\n')
+                    print line
+                lock.release()
+            elif 0<len(ipList)<=limit:
+                lock.acquire()
+                with open('domain.log','a+') as f:
+                    line = '{}\tnoCDN\t{}'.format(site,','.join(ipList))
+                    f.write(line + '\n')
+                    print line
+                with open('realIP.txt','a+') as f:
+                    for ip in ipList:
+                        if isIP(ip) and ip.strip() not in limitIP:
+                            f.write(ip.strip()+'\n')
+                            limitIP.append(ip.strip())
+                lock.release()
+            else:
+                lock.acquire()
+                with open('domain.log','a+') as f:
+                    line = site + '\t' + 'error'
+                    f.write(line + '\n')
+                    print line
+                lock.release()
+        except Queue.Empty:
+            break
         except:
             pass
-            # print server
-            # traceback.print_exc()
-    if len(ipList)>limit:
-        with open('domain.log','a+') as f:
-            line = '{}\tCDN\t{}'.format(site,','.join(ipList))
-            f.write(line + '\n')
-            print line
-    elif 0<len(ipList)<=limit:
-        with open('domain.log','a+') as f:
-            line = '{}\tnoCDN\t{}'.format(site,','.join(ipList))
-            f.write(line + '\n')
-            print line
-        with open('realIP.txt','a+') as f:
-            for ip in ipList:
-                if isIP(ip) and ip.strip() not in limitIP:
-                    f.write(ip.strip()+'\n')
-                    limitIP.append(ip.strip())
-    else:
-        with open('domain.log','a+') as f:
-            line = site + '\t' + 'error'
-            f.write(line + '\n')
-            print line
 
 if __name__ == '__main__':
     open('domain.log','a+').truncate()
     open('realIP.txt', 'a+').truncate()
     if os.path.isfile(sys.argv[1]):
         for line in open(sys.argv[1],'r+').readlines():
-            dnsQuery(line.strip())
+            line = line.strip()
+            if line:
+                qu.put(line)
     else:
-        dnsQuery(sys.argv[1].strip())
-
+        sys.exit(-1)
+    gl = [gevent.spawn(dnsQuery) for i in range(10)]
+    gevent.joinall(gl)
