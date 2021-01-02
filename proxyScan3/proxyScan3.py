@@ -6,10 +6,10 @@
 from concurrent.futures import ThreadPoolExecutor
 import threading
 import requests
-import traceback
 import sys
 import argparse
 import time
+
 
 requests.packages.urllib3.disable_warnings()
 headers = {
@@ -21,7 +21,7 @@ args = dict()
 
 sList = []
 
-outputNamer = str(time.time()) + '.txt'
+outputNamer = str(int(time.time())) + '.txt'
 
 def cmdLineParser():
     parser = argparse.ArgumentParser(description='proxyScan3 verify that the agent can access google.com',
@@ -35,7 +35,7 @@ def cmdLineParser():
     useage.add_argument('--t', metavar='num', dest="threadNum", type=int, default=30,
                         help='num of threads/concurrent, 30 by default')
     useage.add_argument('--type', metavar='http', dest="type", type=str, default='https',
-                        help='Proxy type,https default (e.g https or https,http,socks5)')
+                        help='Proxy type,https default (e.g https,http,socks5)')
     useage.add_argument('-h', '--help', action='help',
                         help='show this help message and exit')
 
@@ -52,16 +52,20 @@ def output(content):
 
 def sockConnect(address):
     address = address.strip()
-    print('[-] Test {}'.format(address))
+    lock.acquire()
+    print('\r [{}] {} #'.format(len(sList)-sList.index(address),address),end='')
+    lock.release()
+
     proxies = {"http": "{}".format(address), "https": "{}".format(address)}
     try:
-        request = requests.get('https://www.google.com/', proxies=proxies,timeout=8,verify=False,headers=headers)
-        print(request.text)
+        request = requests.get('https://www.google.com/', proxies=proxies,timeout=(5,3),verify=False,headers=headers)
+        # print(request.text)
         if request.status_code == 200 and '<title>Google</title>' in request.text:
-            print('[+] ok {}'.format(address))
+            print('\r [+] Found {} #'.format(address))
             output(address)
     except:
-        traceback.print_exc(file=open('error.log','a+'))
+        pass
+        # traceback.print_exc(file=open('error.log','a+'))
 
 def Builder():
     ipList = open(args['targetFile'],'r+').readlines()
@@ -73,14 +77,10 @@ def Builder():
 if __name__ == '__main__':
     cmdLineParser()
     Builder()
-    print(len(sList))
+    print('[+]',len(sList))
     lock = threading.Lock()
     with ThreadPoolExecutor(args['threadNum']) as executor:
         executor.map(sockConnect,sList)
-
-
-
-
 
 
 
