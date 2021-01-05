@@ -1,15 +1,12 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-import gevent
-from gevent import monkey
-monkey.patch_all()
 import dns.resolver
 import os
 import sys
 import re
 import Queue
+from threading import Thread
 from threading import Lock
-
 lock = Lock()
 qu = Queue.Queue()
 
@@ -98,5 +95,8 @@ if __name__ == '__main__':
                 qu.put(line)
     else:
         sys.exit(-1)
-    gl = [gevent.spawn(dnsQuery) for i in range(10)]
-    gevent.joinall(gl)
+
+    pool = [Thread(target=dnsQuery,args=()) for i in range(30)]
+    for th in pool:th.start()
+    for th in pool:th.join()
+
