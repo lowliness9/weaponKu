@@ -1,15 +1,16 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding:utf-8 -*-
 import dns.resolver
 import os
 import sys
 import re
-import Queue
+import queue
 from threading import Thread
 from threading import Lock
-lock = Lock()
-qu = Queue.Queue()
 
+lock = Lock()
+qu = queue.Queue()
+limitIP = []
 limit = 2
 
 def isIP(ip):
@@ -43,7 +44,6 @@ def dnsQuery():
         try:
             site = qu.get(block=False,timeout=0.1)
             ipList = set()
-            limitIP = []
             for server in dns_servers:
                 try:
                     self_server = dns.resolver.Resolver()
@@ -59,14 +59,14 @@ def dnsQuery():
                 with open('domain.log','a+') as f:
                     line = '{}\tCDN\t{}'.format(site,','.join(ipList))
                     f.write(line + '\n')
-                    print line
+                    print(line)
                 lock.release()
             elif 0<len(ipList)<=limit:
                 lock.acquire()
                 with open('domain.log','a+') as f:
                     line = '{}\tnoCDN\t{}'.format(site,','.join(ipList))
                     f.write(line + '\n')
-                    print line
+                    print(line)
                 with open('realIP.txt','a+') as f:
                     for ip in ipList:
                         if isIP(ip) and ip.strip() not in limitIP:
@@ -78,22 +78,29 @@ def dnsQuery():
                 with open('domain.log','a+') as f:
                     line = site + '\t' + 'error'
                     f.write(line + '\n')
-                    print line
+                    print(line)
                 lock.release()
-        except Queue.Empty:
+        except queue.Empty:
             break
         except:
             pass
 
 if __name__ == '__main__':
-    open('domain.log','a+').truncate()
-    open('realIP.txt', 'a+').truncate()
-    if os.path.isfile(sys.argv[1]):
-        for line in open(sys.argv[1],'r+').readlines():
-            line = line.strip()
-            if line:
-                qu.put(line)
-    else:
+    if os.path.isfile('domain.log'):
+        open('domain.log','w').truncate()
+    if os.path.isfile('realIP.txt'):
+        open('realIP.txt', 'w').truncate()
+    try:
+        if os.path.isfile(sys.argv[1]):
+            for line in open(sys.argv[1],'r+').readlines():
+                line = line.strip()
+                if line:
+                    qu.put(line)
+        else:
+            print("python3 cdnDect.py file")
+            sys.exit(-1)
+    except:
+        print("python3 cdnDect.py file")
         sys.exit(-1)
 
     pool = [Thread(target=dnsQuery,args=()) for i in range(30)]
