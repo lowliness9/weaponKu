@@ -21,21 +21,21 @@ args = dict()
 
 sList = []
 
-outputNamer = str(int(time.time())) + '.txt'
+outputNamer = time.strftime("out_%m_%d_%H%M%S.txt", time.localtime())
 
 def cmdLineParser():
     parser = argparse.ArgumentParser(description='proxyGoo verify that the agent can access google.com',
-                                     usage='python proxyGoo.py --file ip.txt --type https,socks5',
+                                     usage='proxyGoo -file ip.txt',
                                      add_help=False)
 
     useage = parser.add_argument_group('Usage')
 
-    useage.add_argument('--file', metavar='file', dest="targetFile", type=str, default='',
+    useage.add_argument('-file', metavar='file', dest="targetFile", type=str, default='',
                         help='Load targets from targetFile (e.g. ip.txt format: 127.0.0.1:1080)')
-    useage.add_argument('--t', metavar='num', dest="threadNum", type=int, default=30,
+    useage.add_argument('-t', metavar='num', dest="threadNum", type=int, default=30,
                         help='num of threads/concurrent, 30 by default')
-    useage.add_argument('--type', metavar='http', dest="type", type=str, default='https',
-                        help='Proxy type,https default (e.g https,http,socks5)')
+    useage.add_argument('-type', metavar='http', dest="type", type=str, default='socks5',
+                        help='Proxy type,socks5 default (e.g https,http,socks5)')
     useage.add_argument('-h', '--help', action='help',
                         help='show this help message and exit')
 
