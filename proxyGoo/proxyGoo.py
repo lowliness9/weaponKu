@@ -36,6 +36,7 @@ def cmdLineParser():
                         help='num of threads/concurrent, 30 by default')
     useage.add_argument('-type', metavar='http', dest="type", type=str, default='socks5',
                         help='Proxy type,socks5 default (e.g https,http,socks5)')
+    useage.add_argument("-n", default=False, action='store_true', help='No output')
     useage.add_argument('-h', '--help', action='help',
                         help='show this help message and exit')
 
@@ -45,6 +46,8 @@ def cmdLineParser():
 
 
 def output(content):
+    if args["n"]:
+        return
     lock.acquire()
     with open(outputNamer,'a+') as f:
         f.write(content+'\n')
