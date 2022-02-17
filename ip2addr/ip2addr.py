@@ -1,6 +1,5 @@
 # -*- coding:utf-8 -*-
 import requests
-import time
 import re
 import sys
 from time import sleep
