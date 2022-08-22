@@ -61,7 +61,7 @@ def sockConnect(address):
 
     proxies = {"http": "{}".format(address), "https": "{}".format(address)}
     try:
-        request = requests.get('https://www.baidu.com.com/', proxies=proxies,timeout=(5,3),verify=False,headers=headers)
+        request = requests.get('https://www.baidu.com/', proxies=proxies,timeout=(5,3),verify=False,headers=headers)
         # print(request.text)
         if request.status_code == 200 and '<title>百度一下，你就知道</title>' in request.text:
             print('\r [+] Found {} #'.format(address))
